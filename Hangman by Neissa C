@@ -1,0 +1,82 @@
+const wordList = ["python", "java", "swift", "javascript"];
+const maxAttempts = 8;
+let wins = 0;
+let losses = 0;
+
+while (true) {
+  // Display the menu
+  console.log("Type 'play' to play the game, 'results' to show the scoreboard, and 'exit' to quit:");
+  const menuChoice = prompt("> ");
+
+  // Process the menu choice
+  if (menuChoice === "play") {
+    // Choose a random word from the list
+    const word = wordList[Math.floor(Math.random() * wordList.length)];
+
+    // Initialize the game state
+    let lettersGuessed = [];
+    let attemptsLeft = maxAttempts;
+    let gameOver = false;
+
+    console.log("H A N G M A N");
+    console.log("");  // Print an empty line
+
+    while (!gameOver) {
+      // Display the current game state
+      console.log(getMaskedWord(word, lettersGuessed));
+      console.log("Attempts left: " + attemptsLeft);
+
+      // Ask the player for a letter
+      let letter = prompt("Input a letter:");
+
+      // Validate the letter
+      if (letter.length !== 1 || !letter.match(/[a-z]/i)) {
+        console.log("Please, enter a lowercase letter from the English alphabet.");
+        continue;
+      }
+      letter = letter.toLowerCase();
+
+      // Check if the letter has already been guessed
+      if (lettersGuessed.includes(letter)) {
+        console.log("You've already guessed this letter");
+        continue;
+      }
+
+      // Add the letter to the list of letters guessed
+      lettersGuessed.push(letter);
+
+      // Check if the letter is in the word
+      if (word.includes(letter)) {
+        console.log("That letter is in the word!");
+      } else {
+        console.log("That letter does not appear in the word");
+        attemptsLeft--;
+      }
+
+      // Check if the player has won or lost
+      if (getMaskedWord(word, lettersGuessed) === word) {
+        console.log("You guessed the word " + word + "!");
+        console.log("You survived!");
+        gameOver = true;
+        wins++;
+      } else if (attemptsLeft === 0) {
+        console.log("Sorry, you lost. The word was: " + word);
+        gameOver = true;
+        losses++;
+      }
+
+      console.log("");  // Print an empty line
+    }
+  } else if (menuChoice === "results") {
+    console.log("You won: " + wins + " times.");
+    console.log("You lost: " + losses + " times.");
+  } else if (menuChoice === "exit") {
+    break;
+  } else {
+    console.log("Invalid input");
+  }
+}
+
+console.log("Thanks for playing!");
+
+// Returns the word with the letters that have been
